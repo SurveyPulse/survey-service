@@ -11,6 +11,10 @@ import com.example.servey_service.exception.SurveyExceptionType;
 import com.example.servey_service.repository.QuestionRepository;
 import com.example.servey_service.repository.SurveyRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,5 +59,12 @@ public class SurveyService {
                                         .orElseThrow(() -> new NotFoundException(SurveyExceptionType.NOT_FOUND_SURVEY));
         return SurveyResponse.from(survey);
     }
-    
+
+    @Transactional(readOnly = true)
+    public Page<SurveyResponse> getAllSurveys(int page) {
+        Pageable pageable = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "createdAt"));
+        return surveyRepository.findAll(pageable)
+                               .map(SurveyResponse::from);
+    }
+
 }
