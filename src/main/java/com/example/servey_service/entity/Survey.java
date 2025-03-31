@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -39,6 +41,9 @@ public class Survey extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SurveyStatus status;
+
+    @OneToMany(mappedBy = "survey")
+    private List<Question> questions = new ArrayList<>();
 
     @Builder
     public Survey(String title, String description, Long creatorUserId, LocalDateTime startTime, LocalDateTime endTime, SurveyStatus status) {
