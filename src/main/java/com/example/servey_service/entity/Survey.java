@@ -39,7 +39,7 @@ public class Survey extends BaseEntity {
 
     // 설문의 진행 상태를 나타내는 필드 (예: 공개, 종료)
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(length = 20)
     private SurveyStatus status;
 
     @OneToMany(mappedBy = "survey")

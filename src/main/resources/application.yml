@@ -41,7 +41,7 @@ spring:
 
   jwt:
     issuer: dsada
-    secret: study-springboot
+    secret: your-very-strong-secret-key-which-is-at-least-32-characters-long
 
 survey:
   base-url: http://localhost:8083/surveys

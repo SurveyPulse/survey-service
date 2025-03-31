@@ -43,18 +43,21 @@ public class SurveyService {
                               .status(SurveyStatus.DRAFT)
                               .build();
 
+        // 먼저 Survey 엔티티를 영속화
+        Survey savedSurvey = surveyRepository.save(survey);
+
         if (request.questions() != null) {
             for (QuestionRequest questionRequest : request.questions()) {
                 Question question = Question.builder()
                                             .questionText(questionRequest.questionText())
                                             .build();
-                question.addSurvey(survey);
+                // 영속화된 Survey를 연결
+                question.addSurvey(savedSurvey);
                 questionRepository.save(question);
             }
         }
 
-        Survey saved = surveyRepository.save(survey);
-        return SurveyResponse.from(saved);
+        return SurveyResponse.from(savedSurvey);
     }
 
     public SurveyResponse getSurveyById(Long surveyId) {
