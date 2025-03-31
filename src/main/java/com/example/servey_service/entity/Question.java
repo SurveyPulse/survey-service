@@ -24,14 +24,9 @@ public class Question extends BaseEntity {
     @Column(nullable = false, length = 500)
     private String questionText;
 
-    // 예: MULTIPLE_CHOICE, TEXT, SCALE 등 )  * enum도 고려
-    @Column(nullable = false)
-    private String questionType;
-
     @Builder
     public Question(String questionText, String questionType) {
         this.questionText = questionText;
-        this.questionType = questionType;
     }
 
     public void addSurvey(Survey survey) {
