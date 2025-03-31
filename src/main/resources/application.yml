@@ -42,3 +42,6 @@ spring:
   jwt:
     issuer: dsada
     secret: study-springboot
+
+survey:
+  base-url: http://localhost:8083/surveys

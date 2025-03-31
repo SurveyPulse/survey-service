@@ -54,4 +54,8 @@ public class Survey extends BaseEntity {
         this.endTime = endTime;
         this.status = status;
     }
+
+    public void changeSurveyStatus(SurveyStatus changeStatus) {
+        this.status = changeStatus;
+    }
 }
