@@ -1,4 +1,4 @@
-package com.example.servey_service.dto;
+package com.example.servey_service.dto.response;
 
 import com.example.servey_service.entity.Question;
 

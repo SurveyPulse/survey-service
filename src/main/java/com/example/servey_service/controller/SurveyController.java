@@ -1,13 +1,16 @@
 package com.example.servey_service.controller;
 
-import com.example.servey_service.dto.SurveyAddUrlResponse;
-import com.example.servey_service.dto.SurveyRequest;
-import com.example.servey_service.dto.SurveyResponse;
+import com.example.servey_service.dto.response.QuestionWithSurveyDto;
+import com.example.servey_service.dto.response.SurveyAddUrlResponse;
+import com.example.servey_service.dto.request.SurveyRequest;
+import com.example.servey_service.dto.response.SurveyResponse;
 import com.example.servey_service.service.SurveyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/surveys")
@@ -46,5 +49,10 @@ public class SurveyController {
     @PostMapping("/{surveyId}/close")
     public ResponseEntity<SurveyResponse> closeSurvey(@PathVariable Long surveyId) {
         return ResponseEntity.ok(surveyService.closeSurvey(surveyId));
+    }
+
+    @GetMapping("/{surveyId}/questions")
+    public ResponseEntity<List<QuestionWithSurveyDto>> getQuestionWithSurvey(@PathVariable Long surveyId) {
+        return ResponseEntity.ok(surveyService.getQuestionWithSurveyDto(surveyId));
     }
 }

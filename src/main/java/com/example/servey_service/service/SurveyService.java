@@ -1,10 +1,11 @@
 package com.example.servey_service.service;
 
 import com.example.global.exception.type.NotFoundException;
-import com.example.servey_service.dto.QuestionRequest;
-import com.example.servey_service.dto.SurveyAddUrlResponse;
-import com.example.servey_service.dto.SurveyRequest;
-import com.example.servey_service.dto.SurveyResponse;
+import com.example.servey_service.dto.request.QuestionRequest;
+import com.example.servey_service.dto.response.QuestionWithSurveyDto;
+import com.example.servey_service.dto.response.SurveyAddUrlResponse;
+import com.example.servey_service.dto.request.SurveyRequest;
+import com.example.servey_service.dto.response.SurveyResponse;
 import com.example.servey_service.entity.Question;
 import com.example.servey_service.entity.Survey;
 import com.example.servey_service.entity.SurveyStatus;
@@ -19,6 +20,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -101,6 +105,13 @@ public class SurveyService {
 
         // Kafka 이벤트 발행 로직은 생략
         return SurveyAddUrlResponse.fromAddUrl(deploy, surveyUrl);
+    }
+
+    public List<QuestionWithSurveyDto> getQuestionWithSurveyDto(Long surveyId) {
+        List<Question> questions = questionRepository.findBySurveyIdWithSurvey(surveyId);
+        return questions.stream()
+                        .map(QuestionWithSurveyDto::from)
+                        .collect(Collectors.toList());
     }
 
 }

@@ -1,4 +1,4 @@
-package com.example.servey_service.dto;
+package com.example.servey_service.dto.request;
 
 import java.time.LocalDateTime;
 import java.util.List;
