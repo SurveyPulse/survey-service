@@ -4,6 +4,7 @@ import com.example.servey_service.dto.response.QuestionWithSurveyDto;
 import com.example.servey_service.dto.response.SurveyAddUrlResponse;
 import com.example.servey_service.dto.request.SurveyRequest;
 import com.example.servey_service.dto.response.SurveyResponse;
+import com.example.servey_service.dto.response.SurveyWithoutQuestionResponse;
 import com.example.servey_service.service.SurveyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,7 +32,7 @@ public class SurveyController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<SurveyResponse>> getAllSurveys(int page) {
+    public ResponseEntity<Page<SurveyWithoutQuestionResponse>> getAllSurveys(@RequestParam(defaultValue = "0") int page) {
         return ResponseEntity.ok(surveyService.getAllSurveys(page));
     }
 
@@ -47,8 +48,9 @@ public class SurveyController {
     }
 
     @PostMapping("/{surveyId}/close")
-    public ResponseEntity<SurveyResponse> closeSurvey(@PathVariable Long surveyId) {
-        return ResponseEntity.ok(surveyService.closeSurvey(surveyId));
+    public ResponseEntity<Void> closeSurvey(@PathVariable Long surveyId) {
+        surveyService.closeSurvey(surveyId);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{surveyId}/questions")

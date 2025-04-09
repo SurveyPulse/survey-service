@@ -45,3 +45,23 @@ spring:
 
 survey:
   base-url: http://localhost:8083/surveys
+
+feign:
+  user-service-url: http://localhost:8081
+
+resilience4j.circuitbreaker:
+  instances:
+    userService:
+      registerHealthIndicator: true
+      slidingWindowSize: 10
+      minimumNumberOfCalls: 5
+      permittedNumberOfCallsInHalfOpenState: 3
+      failureRateThreshold: 50
+      waitDurationInOpenState: 10s
+    surveyService:
+      registerHealthIndicator: true
+      slidingWindowSize: 10
+      minimumNumberOfCalls: 5
+      permittedNumberOfCallsInHalfOpenState: 3
+      failureRateThreshold: 50
+      waitDurationInOpenState: 10s

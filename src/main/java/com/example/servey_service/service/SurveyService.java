@@ -1,11 +1,10 @@
 package com.example.servey_service.service;
 
 import com.example.global.exception.type.NotFoundException;
+import com.example.servey_service.client.service.UserClientService;
 import com.example.servey_service.dto.request.QuestionRequest;
-import com.example.servey_service.dto.response.QuestionWithSurveyDto;
-import com.example.servey_service.dto.response.SurveyAddUrlResponse;
+import com.example.servey_service.dto.response.*;
 import com.example.servey_service.dto.request.SurveyRequest;
-import com.example.servey_service.dto.response.SurveyResponse;
 import com.example.servey_service.entity.Question;
 import com.example.servey_service.entity.Survey;
 import com.example.servey_service.entity.SurveyStatus;
@@ -32,6 +31,7 @@ public class SurveyService {
 
     private final SurveyRepository surveyRepository;
     private final QuestionRepository questionRepository;
+    private final UserClientService userClientService;
 
     @Value("${survey.base-url}")
     private String baseUrl;
@@ -62,19 +62,30 @@ public class SurveyService {
             }
         }
 
-        return SurveyResponse.from(savedSurvey);
+        RespondentUserDto respondentUserDto = userClientService.getUserDto(survey.getCreatorUserId());
+
+        return SurveyResponse.from(savedSurvey, respondentUserDto.username());
     }
 
     public SurveyResponse getSurveyById(Long surveyId) {
         Survey survey = surveyRepository.findById(surveyId)
                                         .orElseThrow(() -> new NotFoundException(SurveyExceptionType.NOT_FOUND_SURVEY));
-        return SurveyResponse.from(survey);
+
+        RespondentUserDto respondentUserDto = userClientService.getUserDto(survey.getCreatorUserId());
+
+        return SurveyResponse.from(survey, respondentUserDto.username());
     }
 
-    public Page<SurveyResponse> getAllSurveys(int page) {
+    public Page<SurveyWithoutQuestionResponse> getAllSurveys(int page) {
         Pageable pageable = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "createdAt"));
+
         return surveyRepository.findAll(pageable)
-                               .map(SurveyResponse::from);
+                               .map(survey -> {
+                                   RespondentUserDto userDto = userClientService.getUserDto(survey.getCreatorUserId());
+                                   String creatorUsername = userDto.username();
+
+                                   return SurveyWithoutQuestionResponse.from(survey, creatorUsername);
+                               });
     }
 
     @Transactional
@@ -85,13 +96,11 @@ public class SurveyService {
     }
 
     @Transactional
-    public SurveyResponse closeSurvey(Long surveyId) {
+    public void closeSurvey(Long surveyId) {
         Survey survey = surveyRepository.findById(surveyId)
                                         .orElseThrow(() -> new NotFoundException(SurveyExceptionType.NOT_FOUND_SURVEY));
         survey.changeSurveyStatus(SurveyStatus.CLOSED);
-        Survey updated = surveyRepository.save(survey);
-
-        return SurveyResponse.from(updated);
+        surveyRepository.save(survey);
     }
 
     @Transactional
