@@ -9,6 +9,7 @@ import com.example.servey_service.dto.response.SurveyResponse;
 import com.example.servey_service.entity.Question;
 import com.example.servey_service.entity.Survey;
 import com.example.servey_service.entity.SurveyStatus;
+import com.example.servey_service.exception.QuestionExceptionType;
 import com.example.servey_service.exception.SurveyExceptionType;
 import com.example.servey_service.repository.QuestionRepository;
 import com.example.servey_service.repository.SurveyRepository;
@@ -107,11 +108,17 @@ public class SurveyService {
         return SurveyAddUrlResponse.fromAddUrl(deploy, surveyUrl);
     }
 
-    public List<QuestionWithSurveyDto> getQuestionWithSurveyDto(Long surveyId) {
-        List<Question> questions = questionRepository.findBySurveyIdWithSurvey(surveyId);
+    public List<QuestionWithSurveyDto> getQuestionsWithSurveyDto(Long surveyId) {
+        List<Question> questions = questionRepository.findBySurveysIdWithSurvey(surveyId);
         return questions.stream()
                         .map(QuestionWithSurveyDto::from)
                         .collect(Collectors.toList());
+    }
+
+    public QuestionWithSurveyDto getQuestionWithSurveyDto(Long surveyId, Long questionId) {
+        Question question = questionRepository.findBySurveyIdAndQuestionId(surveyId, questionId)
+                                                           .orElseThrow(() -> new NotFoundException(QuestionExceptionType.NOT_FOUND_QUESTION));
+        return QuestionWithSurveyDto.from(question);
     }
 
 }

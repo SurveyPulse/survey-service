@@ -52,7 +52,13 @@ public class SurveyController {
     }
 
     @GetMapping("/{surveyId}/questions")
-    public ResponseEntity<List<QuestionWithSurveyDto>> getQuestionWithSurvey(@PathVariable Long surveyId) {
-        return ResponseEntity.ok(surveyService.getQuestionWithSurveyDto(surveyId));
+    public ResponseEntity<List<QuestionWithSurveyDto>> getQuestionsWithSurvey(@PathVariable Long surveyId) {
+        return ResponseEntity.ok(surveyService.getQuestionsWithSurveyDto(surveyId));
     }
+
+    @GetMapping("/{surveyId}/{questionId}")
+    public ResponseEntity<QuestionWithSurveyDto> getQuestionsWithSurvey(@PathVariable Long surveyId, @PathVariable Long questionId) {
+        return ResponseEntity.ok(surveyService.getQuestionWithSurveyDto(surveyId, questionId));
+    }
+
 }
