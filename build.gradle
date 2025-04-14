@@ -45,7 +45,7 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
-	implementation 'com.github.SurveyPulse:global-service:v1.0.7:plain'
+	implementation 'com.github.SurveyPulse:global-service:v1.0.8:plain'
 
 	implementation 'io.github.resilience4j:resilience4j-spring-boot3:2.0.2'
 

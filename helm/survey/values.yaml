@@ -1,0 +1,21 @@
+ingress:
+  host: buildmystudy.com
+  pathType: Prefix
+
+service:
+  port: 80
+
+spring:
+  labels: survey
+  image:
+    repository: 440744253928.dkr.ecr.ap-northeast-2.amazonaws.com/surveypulse/advertise   # ECR에 저장된 스프링 이미지 URL
+    tag: latest
+  service:
+    port: 80
+    survey:
+      name: survey-service
+      port: 8083
+  datasource:
+    url: ""
+    username: ""
+    password: ""
