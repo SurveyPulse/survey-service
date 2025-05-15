@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -68,6 +69,11 @@ public class SurveyController {
             @RequestParam String title,
             @RequestParam(defaultValue = "0") int page) {
         return ResponseEntity.ok(surveyService.searchSurveysByTitle(title, page));
+    }
+
+    @GetMapping("/active")
+    public ResponseEntity<Page<SurveyWithoutQuestionResponse>> getActiveSurveys(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
+        return ResponseEntity.ok(surveyService.getActiveSurveys(page, size, LocalDateTime.now()));
     }
 
 }

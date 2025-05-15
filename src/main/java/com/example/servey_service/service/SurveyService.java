@@ -21,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,10 +46,9 @@ public class SurveyService {
                               .creatorUserId(request.creatorUserId())
                               .startTime(request.startTime())
                               .endTime(request.endTime())
-                              .status(SurveyStatus.DRAFT)
+                              .status(SurveyStatus.OPEN)
                               .build();
 
-        // 먼저 Survey 엔티티를 영속화
         Survey savedSurvey = surveyRepository.save(survey);
 
         if (request.questions() != null) {
@@ -56,7 +56,7 @@ public class SurveyService {
                 Question question = Question.builder()
                                             .questionText(questionRequest.questionText())
                                             .build();
-                // 영속화된 Survey를 연결
+
                 question.addSurvey(savedSurvey);
                 questionRepository.save(question);
             }
@@ -139,4 +139,12 @@ public class SurveyService {
                                });
     }
 
+    public Page<SurveyWithoutQuestionResponse> getActiveSurveys(int page, int size, LocalDateTime now) {
+        Page<Survey> surveys = surveyRepository
+                .findActiveSurveys(now,PageRequest.of(page, size));
+        return surveys.map(survey -> {
+            String username = userClientService.getUserDto(survey.getCreatorUserId()).username();
+            return SurveyWithoutQuestionResponse.from(survey, username);
+        });
+    }
 }
