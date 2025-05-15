@@ -130,4 +130,13 @@ public class SurveyService {
         return QuestionWithSurveyDto.from(question);
     }
 
+    public Page<SurveyWithoutQuestionResponse> searchSurveysByTitle(String title, int page) {
+        Pageable pageable = PageRequest.of(page, 20);
+        return surveyRepository.findByTitleContainingIgnoreCase(title, pageable)
+                               .map(survey -> {
+                                   String creatorUsername = userClientService.getUserDto(survey.getCreatorUserId()).username();
+                                   return SurveyWithoutQuestionResponse.from(survey, creatorUsername);
+                               });
+    }
+
 }

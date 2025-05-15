@@ -63,4 +63,11 @@ public class SurveyController {
         return ResponseEntity.ok(surveyService.getQuestionWithSurveyDto(surveyId, questionId));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<Page<SurveyWithoutQuestionResponse>> searchByTitle(
+            @RequestParam String title,
+            @RequestParam(defaultValue = "0") int page) {
+        return ResponseEntity.ok(surveyService.searchSurveysByTitle(title, page));
+    }
+
 }
