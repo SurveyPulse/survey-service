@@ -12,6 +12,7 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka
+    enabled: false
 
 spring:
   application:
@@ -21,6 +22,12 @@ spring:
     username:
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  cache:
+    type: redis
+  redis:
+    host:
+    port: 6379
 
   jpa:
     hibernate:
@@ -77,3 +84,12 @@ management:
     export:
       prometheus:
         enabled: true
+  management:
+    health:
+      db:
+        enabled: false
+
+logging:
+  level:
+    org.springframework.data.redis.cache: DEBUG
+    org.springframework.cache.redis: TRACE

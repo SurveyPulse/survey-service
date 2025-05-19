@@ -10,10 +10,12 @@ import com.example.servey_service.entity.Survey;
 import com.example.servey_service.entity.SurveyStatus;
 import com.example.servey_service.exception.QuestionExceptionType;
 import com.example.servey_service.exception.SurveyExceptionType;
+import com.example.servey_service.redis.RestPage;
 import com.example.servey_service.repository.QuestionRepository;
 import com.example.servey_service.repository.SurveyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -67,6 +69,7 @@ public class SurveyService {
         return SurveyResponse.from(savedSurvey, respondentUserDto.username());
     }
 
+    @Cacheable(cacheNames = "surveyDetail", key = "#surveyId", cacheManager = "cacheManager")
     public SurveyResponse getSurveyById(Long surveyId) {
         Survey survey = surveyRepository.findById(surveyId)
                                         .orElseThrow(() -> new NotFoundException(SurveyExceptionType.NOT_FOUND_SURVEY));
@@ -76,16 +79,15 @@ public class SurveyService {
         return SurveyResponse.from(survey, respondentUserDto.username());
     }
 
-    public Page<SurveyWithoutQuestionResponse> getAllSurveys(int page) {
-        Pageable pageable = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "createdAt"));
-
-        return surveyRepository.findAll(pageable)
-                               .map(survey -> {
-                                   RespondentUserDto userDto = userClientService.getUserDto(survey.getCreatorUserId());
-                                   String creatorUsername = userDto.username();
-
-                                   return SurveyWithoutQuestionResponse.from(survey, creatorUsername);
-                               });
+    @Cacheable(cacheNames = "surveyList", key = "#page", cacheManager = "cacheManager")
+    public RestPage<SurveyWithoutQuestionResponse> getAllSurveys(int page) {
+        Page<SurveyWithoutQuestionResponse> p = surveyRepository.findAll(
+                PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "createdAt"))
+        ).map(survey -> {
+            String uname = userClientService.getUserDto(survey.getCreatorUserId()).username();
+            return SurveyWithoutQuestionResponse.from(survey, uname);
+        });
+        return new RestPage<>(p);
     }
 
     @Transactional
@@ -117,6 +119,7 @@ public class SurveyService {
         return SurveyAddUrlResponse.fromAddUrl(deploy, surveyUrl);
     }
 
+    @Cacheable(cacheNames = "questionsBySurvey", key = "#surveyId", cacheManager = "cacheManager")
     public List<QuestionWithSurveyDto> getQuestionsWithSurveyDto(Long surveyId) {
         List<Question> questions = questionRepository.findBySurveysIdWithSurvey(surveyId);
         return questions.stream()
@@ -124,8 +127,9 @@ public class SurveyService {
                         .collect(Collectors.toList());
     }
 
+    @Cacheable(cacheNames = "questionDetail", key = "#surveyId + '-' + #questionId")
     public QuestionWithSurveyDto getQuestionWithSurveyDto(Long surveyId, Long questionId) {
-        Question question = questionRepository.findBySurveyIdAndQuestionId(surveyId, questionId)
+    Question question = questionRepository.findBySurveyIdAndQuestionId(surveyId, questionId)
                                                            .orElseThrow(() -> new NotFoundException(QuestionExceptionType.NOT_FOUND_QUESTION));
         return QuestionWithSurveyDto.from(question);
     }
@@ -139,12 +143,14 @@ public class SurveyService {
                                });
     }
 
-    public Page<SurveyWithoutQuestionResponse> getActiveSurveys(int page, int size, LocalDateTime now) {
-        Page<Survey> surveys = surveyRepository
-                .findActiveSurveys(now,PageRequest.of(page, size));
-        return surveys.map(survey -> {
-            String username = userClientService.getUserDto(survey.getCreatorUserId()).username();
-            return SurveyWithoutQuestionResponse.from(survey, username);
+    @Cacheable(cacheNames = "activeSurveys", key = "#page", cacheManager = "cacheManager")
+    public RestPage<SurveyWithoutQuestionResponse> getActiveSurveys(int page, LocalDateTime now) {
+        Page<SurveyWithoutQuestionResponse> p = surveyRepository.findActiveSurveys(
+                now, PageRequest.of(page, 20)
+        ).map(survey -> {
+            String uname = userClientService.getUserDto(survey.getCreatorUserId()).username();
+            return SurveyWithoutQuestionResponse.from(survey, uname);
         });
+        return new RestPage<>(p);
     }
 }

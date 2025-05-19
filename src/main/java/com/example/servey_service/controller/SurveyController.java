@@ -60,7 +60,7 @@ public class SurveyController {
     }
 
     @GetMapping("/{surveyId}/{questionId}")
-    public ResponseEntity<QuestionWithSurveyDto> getQuestionsWithSurvey(@PathVariable Long surveyId, @PathVariable Long questionId) {
+    public ResponseEntity<QuestionWithSurveyDto> getQuestionWithSurvey(@PathVariable Long surveyId, @PathVariable Long questionId) {
         return ResponseEntity.ok(surveyService.getQuestionWithSurveyDto(surveyId, questionId));
     }
 
@@ -72,8 +72,8 @@ public class SurveyController {
     }
 
     @GetMapping("/active")
-    public ResponseEntity<Page<SurveyWithoutQuestionResponse>> getActiveSurveys(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
-        return ResponseEntity.ok(surveyService.getActiveSurveys(page, size, LocalDateTime.now()));
+    public ResponseEntity<Page<SurveyWithoutQuestionResponse>> getActiveSurveys(@RequestParam(defaultValue = "0") int page) {
+        return ResponseEntity.ok(surveyService.getActiveSurveys(page, LocalDateTime.now()));
     }
 
 }
