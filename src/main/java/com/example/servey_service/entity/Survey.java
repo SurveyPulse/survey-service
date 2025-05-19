@@ -14,7 +14,13 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "surveys")
+@Table(
+        name = "surveys",
+        indexes = {
+                @Index(name = "idx_surveys_start_time", columnList = "startTime"),
+                @Index(name = "idx_surveys_end_time",   columnList = "endTime")
+        }
+)
 public class Survey extends BaseEntity {
 
     @Id
