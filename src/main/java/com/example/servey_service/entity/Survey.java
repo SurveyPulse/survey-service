@@ -33,19 +33,17 @@ public class Survey extends BaseEntity {
     @Column(length = 500)
     private String description;
 
-    // 사용자 서비스와의 JOIN 없이 단순히 생성자 ID를 저장합니다.
     @Column(nullable = false)
     private Long creatorUserId;
 
-    @Column
+    @Column(nullable = false)
     private LocalDateTime startTime;
 
-    @Column
+    @Column(nullable = false)
     private LocalDateTime endTime;
 
-    // 설문의 진행 상태를 나타내는 필드 (예: 공개, 종료)
     @Enumerated(EnumType.STRING)
-    @Column(length = 20)
+    @Column(nullable = false)
     private SurveyStatus status;
 
     @OneToMany(mappedBy = "survey")

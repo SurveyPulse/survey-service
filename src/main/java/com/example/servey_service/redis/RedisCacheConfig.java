@@ -27,24 +27,22 @@ public class RedisCacheConfig {
     @Bean("cacheManager")
     @Primary
     public CacheManager cacheManager(RedisConnectionFactory factory) {
-        // 1) ObjectMapper 설정
+
         ObjectMapper om = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        // (이전 PageImplMixin 등록 코드를 제거합니다)
-
-        // 2) 전체 타입에 @class 메타정보 허용
+        // 전체 타입에 @class 메타정보 허용
         om.activateDefaultTyping(
                 LaissezFaireSubTypeValidator.instance,
                 ObjectMapper.DefaultTyping.EVERYTHING,
                 JsonTypeInfo.As.PROPERTY
         );
 
-        // 3) 커스텀 JSON Serializer 생성
+        // 커스텀 JSON Serializer 생성
         CustomRedisJsonSerializer ser = new CustomRedisJsonSerializer(om);
 
-        // 4) RedisCacheConfiguration 설정
+        // RedisCacheConfiguration 설정
         RedisCacheConfiguration cfg = RedisCacheConfiguration.defaultCacheConfig()
                                                              // 키 직렬화: String
                                                              .serializeKeysWith(RedisSerializationContext.SerializationPair
@@ -55,7 +53,6 @@ public class RedisCacheConfig {
                                                              // TTL 설정: 15초
                                                              .entryTtl(Duration.ofSeconds(15));
 
-        // 5) RedisCacheManager 빌드 및 반환
         return RedisCacheManager.builder(factory)
                                 .cacheDefaults(cfg)
                                 .build();

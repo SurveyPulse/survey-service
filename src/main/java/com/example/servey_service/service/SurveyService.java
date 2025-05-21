@@ -109,13 +109,12 @@ public class SurveyService {
     public SurveyAddUrlResponse deploySurvey(Long surveyId) {
         Survey survey = surveyRepository.findById(surveyId)
                                         .orElseThrow(() -> new NotFoundException(SurveyExceptionType.NOT_FOUND_SURVEY));
-        // 배포 시 상태를 OPEN으로 변경
+
         survey.changeSurveyStatus(SurveyStatus.OPEN);
         Survey deploy = surveyRepository.save(survey);
 
         String surveyUrl = baseUrl + "/" + deploy.getSurveyId();
 
-        // Kafka 이벤트 발행 로직은 생략
         return SurveyAddUrlResponse.fromAddUrl(deploy, surveyUrl);
     }
 
