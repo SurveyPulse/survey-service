@@ -34,9 +34,9 @@ jobs:
         run: |
           sed -i 's|AWS_ACCESS_KEY_ID_PLACEHOLDER|${{ secrets.AWS_ACCESS_KEY_ID }}|g' src/main/resources/application.yml
           sed -i 's|AWS_SECRET_ACCESS_KEY_PLACEHOLDER|${{ secrets.AWS_SECRET_ACCESS_KEY }}|g' src/main/resources/application.yml
-          sed -i 's|DB_URL_PLACEHOLDER|${{ secrets.SPRING_DATASOURCE_URL }}|g' src/main/resources/application.yml
-          sed -i 's|DB_USERNAME_PLACEHOLDER|${{ secrets.SPRING_DATASOURCE_USERNAME }}|g' src/main/resources/application.yml
-          sed -i 's|DB_PASSWORD_PLACEHOLDER|${{ secrets.SPRING_DATASOURCE_PASSWORD }}|g' src/main/resources/application.yml
+          sed -i 's|DB_URL_PLACEHOLDER|${{ secrets.SPRING_SURVEY_DATASOURCE_URL }}|g' src/main/resources/application.yml
+          sed -i 's|DB_USERNAME_PLACEHOLDER|${{ secrets.SPRING_SURVEY_DATASOURCE_URL }}|g' src/main/resources/application.yml
+          sed -i 's|DB_PASSWORD_PLACEHOLDER|${{ secrets.SPRING_SURVEY_DATASOURCE_URL }}|g' src/main/resources/application.yml
 
       - name: Give gradlew execute permission
         run: chmod +x ./gradlew
