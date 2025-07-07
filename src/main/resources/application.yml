@@ -55,22 +55,24 @@ survey:
 feign:
   user-service-url: http://buildmystudy.com
 
-resilience4j.circuitbreaker:
-  instances:
-    userService:
-      registerHealthIndicator: true
-      slidingWindowSize: 10
-      minimumNumberOfCalls: 5
-      permittedNumberOfCallsInHalfOpenState: 3
-      failureRateThreshold: 50
-      waitDurationInOpenState: 10s
-    surveyService:
-      registerHealthIndicator: true
-      slidingWindowSize: 10
-      minimumNumberOfCalls: 5
-      permittedNumberOfCallsInHalfOpenState: 3
-      failureRateThreshold: 50
-      waitDurationInOpenState: 10s
+resilience4j:
+  circuitbreaker:
+    instances:
+      userService:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+
+  retry:
+    instances:
+      userService:
+        maxAttempts: 3          # 최대 재시도 횟수
+        waitDuration: 1s        # 재시도 간 대기 시간
+
+  timelimiter:
+    instances:
+      userService:
+        timeoutDuration: 1s     # 최대 대기 시간
 
 management:
   endpoints:
