@@ -72,7 +72,7 @@ resilience4j:
   timelimiter:
     instances:
       userService:
-        timeoutDuration: 1s     # 최대 대기 시간
+        timeoutDuration: 2s     # 최대 대기 시간
 
 management:
   endpoints:
