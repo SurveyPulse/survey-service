@@ -62,13 +62,12 @@ resilience4j:
         slidingWindowSize: 10
         failureRateThreshold: 50
         waitDurationInOpenState: 10s
-
+        permittedNumberOfCallsInHalfOpenState: 3
   retry:
     instances:
       userService:
         maxAttempts: 3          # 최대 재시도 횟수
-        waitDuration: 1s        # 재시도 간 대기 시간
-
+        waitDuration: 1s        # 재시도 간 대기 시
   timelimiter:
     instances:
       userService:
