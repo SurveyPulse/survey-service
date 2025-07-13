@@ -17,8 +17,10 @@ import java.util.List;
 @Table(
         name = "surveys",
         indexes = {
-                @Index(name = "idx_surveys_start_time", columnList = "startTime"),
-                @Index(name = "idx_surveys_end_time",   columnList = "endTime")
+                @Index(
+                        name = "idx_surveys_start_end",
+                        columnList = "startTime, endTime"
+                )
         }
 )
 public class Survey extends BaseEntity {
