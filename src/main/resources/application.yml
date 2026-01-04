@@ -74,6 +74,9 @@ resilience4j:
         timeoutDuration: 2s     # 최대 대기 시간
 
 management:
+  tracing:
+    sampling:
+      probability: 1.0
   endpoints:
     web:
       exposure:
