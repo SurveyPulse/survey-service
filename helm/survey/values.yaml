@@ -5,6 +5,9 @@ ingress:
 service:
   port: 80
 
+survey:
+  baseUrl:
+
 spring:
   labels: survey
   image:
@@ -19,6 +22,9 @@ spring:
     url: ""
     username: ""
     password: ""
+  redis:
+    host: "localhost"
+    port: 6379
 
 autoscaling:
   enabled: true
