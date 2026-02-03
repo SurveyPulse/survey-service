@@ -15,7 +15,9 @@ import com.example.servey_service.repository.QuestionRepository;
 import com.example.servey_service.repository.SurveyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -91,6 +93,10 @@ public class SurveyService {
     }
 
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "surveyDetail", key = "#surveyId"),
+            @CacheEvict(cacheNames = "questionsBySurvey", key = "#surveyId")
+    })
     public void deleteSurvey(Long surveyId) {
         Survey survey = surveyRepository.findById(surveyId)
                                         .orElseThrow(() -> new NotFoundException(SurveyExceptionType.NOT_FOUND_SURVEY));
@@ -98,6 +104,7 @@ public class SurveyService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "surveyDetail", key = "#surveyId")
     public void closeSurvey(Long surveyId) {
         Survey survey = surveyRepository.findById(surveyId)
                                         .orElseThrow(() -> new NotFoundException(SurveyExceptionType.NOT_FOUND_SURVEY));
@@ -106,6 +113,7 @@ public class SurveyService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "surveyDetail", key = "#surveyId")
     public SurveyAddUrlResponse deploySurvey(Long surveyId) {
         Survey survey = surveyRepository.findById(surveyId)
                                         .orElseThrow(() -> new NotFoundException(SurveyExceptionType.NOT_FOUND_SURVEY));
